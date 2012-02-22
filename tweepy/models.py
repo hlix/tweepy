@@ -45,6 +45,7 @@ class Status(Model):
     @classmethod
     def parse(cls, api, json):
         status = cls(api)
+        status._json = json
         for k, v in json.items():
             if k == 'user':
                 user_model = getattr(api.parser.model_factory, 'user')
@@ -84,6 +85,7 @@ class User(Model):
     @classmethod
     def parse(cls, api, json):
         user = cls(api)
+        user._json = json
         for k, v in json.items():
             if k == 'created_at':
                 setattr(user, k, parse_datetime(v))
@@ -146,6 +148,7 @@ class DirectMessage(Model):
     @classmethod
     def parse(cls, api, json):
         dm = cls(api)
+        dm._json = json
         for k, v in json.items():
             if k == 'sender' or k == 'recipient':
                 setattr(dm, k, User.parse(api, v))
@@ -167,11 +170,13 @@ class Friendship(Model):
 
         # parse source
         source = cls(api)
+        source._json = json
         for k, v in relationship['source'].items():
             setattr(source, k, v)
 
         # parse target
         target = cls(api)
+        target._json = json
         for k, v in relationship['target'].items():
             setattr(target, k, v)
 
@@ -183,6 +188,7 @@ class SavedSearch(Model):
     @classmethod
     def parse(cls, api, json):
         ss = cls(api)
+        ss._json = json
         for k, v in json.items():
             if k == 'created_at':
                 setattr(ss, k, parse_datetime(v))
@@ -199,6 +205,7 @@ class SearchResult(Model):
     @classmethod
     def parse(cls, api, json):
         result = cls()
+        result._json = json
         for k, v in json.items():
             if k == 'created_at':
                 setattr(result, k, parse_search_datetime(v))
@@ -230,6 +237,7 @@ class List(Model):
     @classmethod
     def parse(cls, api, json):
         lst = List(api)
+        lst._json = json
         for k,v in json.items():
             if k == 'user':
                 setattr(lst, k, User.parse(api, v))
